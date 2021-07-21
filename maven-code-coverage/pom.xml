@@ -29,7 +29,7 @@
         </dependency>
 
     </dependencies>
-<!--    <build>
+    <build>
         <finalName>maven-code-coverage</finalName>
         <plugins>
             <plugin>
@@ -79,6 +79,6 @@
             </plugin>
 
         </plugins>
-    </build>  -->
+    </build> 
 
 </project>
