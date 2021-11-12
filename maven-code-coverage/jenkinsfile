@@ -6,7 +6,7 @@ pipeline{
         stage("Build"){
             steps{
                 script {
-                    cd ${workspace}/maven-code-coverage
+                    cd $WORKSPACE/maven-code-coverage
                     mvn clean install
                 }
             }
