@@ -5,17 +5,13 @@ pipeline{
     stages{
         stage("Build"){
             steps{
-                script {
-                    cd ${workspace}/maven-code-coverage
+                echo "========executing Build========"
+                sh '''
+                    cd maven-code-coverage
                     mvn clean install
-                }
+                '''
             }
             post{
-                always{
-                    archiveArtifacts artifacts: 'target/*.jar'
-                    junit 'maven-code-coverage/target/surefire-reports/**/*.xml'
-                    publishCoverage adapters: [jacocoAdapter('target/site/jacoco/jacoco.xml')]
-                }
                 success{
                     echo "========Build executed successfully========"
                 }
@@ -24,7 +20,6 @@ pipeline{
                 }
             }
         }
-        
     }
     post{
         success{
