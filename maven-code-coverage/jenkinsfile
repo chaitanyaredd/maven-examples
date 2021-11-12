@@ -6,9 +6,8 @@ pipeline{
     stages{
         stage("Build"){
             steps{
-                script {
-                    cd maven-code-coverage
-                    mvn clean install
+                dir("${env.WORKSPACE}/maven-code-coverage"){
+                    sh "${mvnTool}/bin/mvn clean install"
                 }
             }
             post{
@@ -31,3 +30,4 @@ pipeline{
         }
     }
 }
+
