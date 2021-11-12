@@ -1,0 +1,37 @@
+pipeline{
+    agent{
+        label "master"
+    }
+    stages{
+        stage("Build"){
+            steps{
+                script {
+                    cd ${workspace}/maven-code-coverage
+                    mvn clean install
+                }
+            }
+            post{
+                always{
+                    archiveArtifacts artifacts: 'target/*.jar'
+                    junit 'maven-code-coverage/target/surefire-reports/**/*.xml'
+                    publishCoverage adapters: [jacocoAdapter('target/site/jacoco/jacoco.xml')]
+                }
+                success{
+                    echo "========Build executed successfully========"
+                }
+                failure{
+                    echo "========Build execution failed========"
+                }
+            }
+        }
+        
+    }
+    post{
+        success{
+            echo "========pipeline executed successfully ========"
+        }
+        failure{
+            echo "========pipeline execution failed========"
+        }
+    }
+}
