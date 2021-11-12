@@ -2,11 +2,14 @@ pipeline{
     agent{
         label "master"
     }
+    tools{
+        maven: "maven"
+    }
     stages{
         stage("Build"){
             steps{
                 script {
-                    cd maven-code-coverage
+                    cd ${env.WORSPACE}/maven-code-coverage
                     mvn clean install
                 }
             }
