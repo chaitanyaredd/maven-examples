@@ -1,16 +1,14 @@
 pipeline {
     agent any
-
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "custom-mvn"
     }
-
     stages {
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
-                //git 'https://github.com/chaitanyaredd/maven-examples.git'
+                git 'https://github.com/chaitanyaredd/maven-examples.git'
                 dir("${env.WORKSPACE}/maven-code-coverage"){
                     sh "mvn clean install"
                 }
@@ -25,7 +23,27 @@ pipeline {
                 // failed, record the test results and archive the jar file.
                 success {
                     junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'target/*.jar'
+                    archiveArtifacts '**/target/*.jar'
+                }
+            }
+        }
+        stage('SonarQube analysis') {
+            steps {
+                // Mention the sonarqube installtion name which is configured in ConfigureSystem
+                withSonarQubeEnv('SQ-DOCKER') {
+                    // Optionally use a Maven environment you've configured already
+                    dir("${env.WORKSPACE}/maven-code-coverage"){
+                        sh 'mvn sonar:sonar -Dsonar.login="707263e200d291e98e7aacfff43e481c2071012c" -Dsonar.projectKey="maven-custom" -Dsonar.projectName="maven-custome"'
+                    }
+                }
+            }
+        }
+        stage("Quality Gate") {
+        // Create a webhook in sonarqube
+        // Sonarqube --> project --> webhook --> add jenkins url as (http://<jenkins_url>/sonarqube-webhook)
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
