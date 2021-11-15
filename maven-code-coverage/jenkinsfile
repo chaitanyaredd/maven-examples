@@ -1,33 +1,33 @@
-pipeline{
+pipeline {
     agent any
+
     tools {
-        maven 'maven'
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "custom-mvn"
     }
-    stages{
-        stage("Build"){
-            steps{
+
+    stages {
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                //git 'https://github.com/chaitanyaredd/maven-examples.git'
                 dir("${env.WORKSPACE}/maven-code-coverage"){
-                    sh "${mvnTool}/bin/mvn clean install"
+                    sh "mvn clean install"
+                }
+
+                // Run Maven on a Unix agent.
+                // To run Maven on a Windows agent, use
+                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
                 }
             }
-            post{
-                success{
-                    archiveArtifacts artifacts: 'target/*.jar'
-                    junit 'maven-code-coverage/target/surefire-reports/**/*.xml'
-                }
-                failure{
-                    echo "========Build execution failed========"
-                }
-            }
-        }
-    }
-    post{
-        success{
-            echo "========pipeline executed successfully ========"
-        }
-        failure{
-            echo "========pipeline execution failed========"
         }
     }
 }
-
