@@ -34,6 +34,7 @@ pipeline {
                     // Optionally use a Maven environment you've configured already
                     dir("${env.WORKSPACE}/maven-code-coverage"){
                         sh 'mvn sonar:sonar -Dsonar.projectKey="maven-custom" -Dsonar.projectName="maven-custome"'
+                        sh 'sleep 60s'
                     }
                 }
             }
