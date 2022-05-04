@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        registry = "https://hub.docker.com"
+        registry = "https://hub.docker.com/maven-code-coverage"
         registryCredential = "dockerhubcreds"
     }
     tools {
