@@ -56,22 +56,24 @@ pipeline {
         stage("Create docker image") {
             steps {
                 dir("${env.WORKSPACE}/maven-code-coverage"){
-                     //sh 'docker build -t maven-code-coverage:latest .'
-                     script {
+                     sh 'docker build -t maven-code-coverage:latest .'
+                     sh 'docker tag maven-code-coverage:latest chakr014/maven-code-coverage:latest'
+/*                     script {
                         docker.build registry + ":BUILD_NUMBER"
-//                        docker build -t maven-code-coverage:latest
+                        docker build -t maven-code-coverage:latest */
                      }
                 }
             }
         }
-//        stage("push docker image") {
-//            steps {
-//                script {
-//                    docker.withRegistry( '',registryCredential ){
-//                        dockerImage.push()
-//                    }
-//                }
-//            }
-//        }
+        stage("push docker image") {
+            steps {
+                script {
+                    sh 'docker push chakr014/maven-code-coverage:latest'
+/*                    docker.withRegistry( '',registryCredential ){
+                        dockerImage.push() */
+                    }
+                }
+            }
+        }
     }
 }
