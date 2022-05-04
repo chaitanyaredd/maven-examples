@@ -30,10 +30,10 @@ pipeline {
         stage('SonarQube analysis') {
             steps {
                 // Mention the sonarqube installtion name which is configured in ConfigureSystem
-                withSonarQubeEnv('SQ-DOCKER') {
+                withSonarQubeEnv('mysonarqube') {
                     // Optionally use a Maven environment you've configured already
                     dir("${env.WORKSPACE}/maven-code-coverage"){
-                        sh 'mvn sonar:sonar -Dsonar.login="707263e200d291e98e7aacfff43e481c2071012c" -Dsonar.projectKey="maven-custom" -Dsonar.projectName="maven-custome"'
+                        sh 'mvn sonar:sonar -Dsonar.projectKey="maven-custom" -Dsonar.projectName="maven-custome"'
                     }
                 }
             }
