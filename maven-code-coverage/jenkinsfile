@@ -1,18 +1,18 @@
 pipeline {
     agent any
-    environment {
-        registry = "https://hub.docker.com/maven-code-coverage"
-        registryCredential = "dockerhubcreds"
-    }
-    tools {
-        // Install the Maven version configured as "M3" and add it to the path.
-        maven "custom-mvn"
+//    environment {
+//        registry = "https://hub.docker.com/maven-code-coverage"
+//        registryCredential = "dockerhubcreds"
+//    }
+//    tools {
+//        // Install the Maven version configured as "M3" and add it to the path.
+//        maven "custom-mvn"
     }
     stages {
         stage('Build') {
             steps {
-                // Get some code from a GitHub repository
-                git 'https://github.com/chaitanyaredd/maven-examples.git'
+  //              // Get some code from a GitHub repository
+  //              git 'https://github.com/chaitanyaredd/maven-examples.git'
                 dir("${env.WORKSPACE}/maven-code-coverage"){
                     sh "mvn clean install"
                 }
@@ -52,24 +52,24 @@ pipeline {
                 }
             }
         }
-        stage("Create docker image") {
-            steps {
-                dir("${env.WORKSPACE}/maven-code-coverage"){
-                     //sh 'docker build -t maven-code-coverage:latest .'
-                     script {
-                        docker.build registry + ":BUILD_NUMBER"
-                     }
-                }
-            }
-        }
-        stage("push docker image") {
-            steps {
-                script {
-                    docker.withRegistry( '',registryCredential ){
-                        dockerImage.push()
-                    }
-                }
-            }
-        }
+//        stage("Create docker image") {
+//            steps {
+//                dir("${env.WORKSPACE}/maven-code-coverage"){
+//                     //sh 'docker build -t maven-code-coverage:latest .'
+//                     script {
+//                        docker.build registry + ":BUILD_NUMBER"
+//                     }
+//                }
+//            }
+//        }
+//        stage("push docker image") {
+//            steps {
+//                script {
+//                    docker.withRegistry( '',registryCredential ){
+//                        dockerImage.push()
+//                    }
+//                }
+//            }
+//        }
     }
 }
