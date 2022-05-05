@@ -1,0 +1,43 @@
+stages:
+  - build
+  - sonarscan
+  - qualitycheck
+  - build_docker_image
+  - publish_docker_image
+
+build_source_code:
+  stage: build
+  image: maven:latest
+  script:
+    - mvn clean install
+  artifacts:
+    path:
+      - target/*.jar
+      
+sonar scanning:
+  stage: sonarscan
+  image: maven:latest
+  script:
+    - mvn sonar:sonar -Dsonar.projectKey="maven-custom" -Dsonar.projectName="maven-custom"
+    - sleep 60s
+
+Quality gate check:
+  stage: qualitycheck
+  image: maven:latest
+  script:
+    - mvn verify sonar:sonar -Dsonar.projectKey="maven-custom" -Dsonar.projectName="maven-custom" -Dsonar.qualitygate.wait=true
+  allow_failure: false
+  
+create docker image:
+  stage: build_docker_image
+  image: docker:latest
+  script:
+    - docker build -t maven-code-coverage:latest .
+    - docker tag maven-code-coverage:latest chakr014/maven-code-coverage:latest
+    
+push docker image:
+  stage: publish_docker_image
+  image: docker:latest
+  script:
+    - docker push chakr014/maven-code-coverage:latest
+    
