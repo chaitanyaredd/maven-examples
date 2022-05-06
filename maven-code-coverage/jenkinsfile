@@ -57,7 +57,7 @@ pipeline {
             steps {
                 dir("${env.WORKSPACE}/maven-code-coverage"){
                      sh 'docker build -t maven-code-coverage:latest .'
-                     sh 'docker tag maven-code-coverage:latest https://index.docker.io/v1/chakr014/maven-code-coverage:latest'
+                     sh 'docker tag maven-code-coverage:latest index.docker.io/v1/chakr014/maven-code-coverage:latest'
 /*                     script {
                         docker.build registry + ":BUILD_NUMBER"
                         docker build -t maven-code-coverage:latest
@@ -68,7 +68,10 @@ pipeline {
         stage("push docker image") {
             steps {
                 script {
-                    sh 'docker push https://index.docker.io/v1/chakr014/maven-code-coverage:latest'
+                    sh '
+                        docker login index.docker.io/v1 --username chakr014 --password 523dda80-c237-4285-9f11-ab70b4b5dbf4
+                        docker push index.docker.io/v1/chakr014/maven-code-coverage:latest
+                        '
 /*                    docker.withRegistry( '',registryCredential ){
                         dockerImage.push()
                     } */
